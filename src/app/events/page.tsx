@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Calendar, TvMinimal, Users, Music, PartyPopper, Trophy } from 'lucide-react';
+import { Calendar, Tv, Users, Music, PartyPopper, Trophy } from 'lucide-react';
 
 const upcomingEvents = [
   {
@@ -10,7 +10,7 @@ const upcomingEvents = [
     date: 'Every Weekend',
     description: 'Watch all the major Premier League matches on our big screens with Sky Sports',
     descriptionIt: 'Guarda tutte le principali partite di Premier League sui nostri maxischermi con Sky Sports',
-    icon: TvMinimal,
+    icon: Tv,
     image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=600&h=400&fit=crop',
   },
   {
@@ -90,7 +90,7 @@ export default function EventsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <TvMinimal className="w-12 h-12 text-pub-brass mb-4" />
+                <Tv className="w-12 h-12 text-pub-brass mb-4" />
                 <h2 className="text-3xl md:text-4xl font-serif font-bold text-pub-green mb-4">
                   Watch Live Sports on Sky
                 </h2>

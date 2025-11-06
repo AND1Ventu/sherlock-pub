@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, Beer, UtensilsCrossed, TvMinimal, Users, MapPin } from 'lucide-react';
+import { Calendar, Beer, UtensilsCrossed, Tv, Users, MapPin } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -80,7 +80,7 @@ export default function HomePage() {
               </div>
 
               <div className="card text-center hover:shadow-xl transition-shadow">
-                <TvMinimal className="w-12 h-12 text-pub-brass mx-auto mb-4" />
+                <Tv className="w-12 h-12 text-pub-brass mx-auto mb-4" />
                 <h3 className="text-xl font-serif font-bold text-pub-green mb-2">Sky Sports</h3>
                 <p className="text-neutral-600">
                   Watch all major sporting events on our big screens. Football, rugby, cricket - we've got it all!
