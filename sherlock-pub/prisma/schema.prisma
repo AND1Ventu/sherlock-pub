@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String
+  role          UserRole  @default(WAITER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  orders        Order[]
+}
+
+enum UserRole {
+  ADMIN
+  KITCHEN
+  BARTENDER
+  WAITER
+}
+
+model Category {
+  id          String      @id @default(cuid())
+  name        String
+  nameIt      String
+  slug        String      @unique
+  order       Int         @default(0)
+  icon        String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  menuItems   MenuItem[]
+}
+
+model MenuItem {
+  id              String          @id @default(cuid())
+  name            String
+  nameIt          String
+  description     String?
+  descriptionIt   String?
+  price           Float
+  image           String?
+  categoryId      String
+  category        Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  allergens       Allergen[]
+  available       Boolean         @default(true)
+  featured        Boolean         @default(false)
+  abv             Float?
+  origin          String?
+  style           String?
+  ingredients     String?
+  ingredientsIt   String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  orderItems      OrderItem[]
+  customizations  Customization[]
+}
+
+enum Allergen {
+  GLUTEN
+  DAIRY
+  EGGS
+  FISH
+  SHELLFISH
+  NUTS
+  PEANUTS
+  SOY
+  CELERY
+  MUSTARD
+  SESAME
+  SULFITES
+  LUPIN
+  MOLLUSCS
+}
+
+model Customization {
+  id          String     @id @default(cuid())
+  name        String
+  nameIt      String
+  type        CustomizationType
+  options     String[]   // JSON array of options
+  optionsIt   String[]
+  price       Float      @default(0)
+  menuItemId  String
+  menuItem    MenuItem   @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+enum CustomizationType {
+  SINGLE_SELECT
+  MULTI_SELECT
+  TEXT_INPUT
+}
+
+model Table {
+  id          String    @id @default(cuid())
+  number      String    @unique
+  qrCode      String    @unique
+  capacity    Int       @default(4)
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  orders      Order[]
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique
+  tableId         String?
+  table           Table?        @relation(fields: [tableId], references: [id])
+  customerName    String?
+  customerEmail   String?
+  customerPhone   String?
+  status          OrderStatus   @default(PENDING)
+  orderType       OrderType     @default(DINE_IN)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  paymentMethod   String?
+  subtotal        Float
+  tax             Float
+  tip             Float         @default(0)
+  total           Float
+  specialInstructions String?
+  stripePaymentId String?
+  items           OrderItem[]
+  createdById     String?
+  createdBy       User?         @relation(fields: [createdById], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  completedAt     DateTime?
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  FAILED
+}
+
+model OrderItem {
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId      String
+  menuItem        MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity        Int
+  unitPrice       Float
+  customizations  String?  // JSON string of selected customizations
+  specialNotes    String?
+  total           Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Reservation {
+  id              String            @id @default(cuid())
+  name            String
+  email           String
+  phone           String
+  date            DateTime
+  time            String
+  guests          Int
+  specialRequests String?
+  status          ReservationStatus @default(PENDING)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  titleIt     String
+  description String?
+  descriptionIt String?
+  image       String?
+  date        DateTime
+  endDate     DateTime?
+  category    String   // sports, live-music, private-party, etc.
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Settings {
+  id                String   @id @default(cuid())
+  key               String   @unique
+  value             String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
